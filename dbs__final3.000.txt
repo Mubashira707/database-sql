@@ -1,0 +1,338 @@
+
+
+-- ===============================
+-- 1. CREATE TABLES
+-- ===============================
+
+CREATE TABLE Movie (
+    movieId INT PRIMARY KEY,
+    title VARCHAR(100),
+    category VARCHAR(50),
+    duration INT,
+    releaseDate DATE,
+    rating DECIMAL(3,1)
+);
+
+CREATE TABLE Customer (
+    customerId INT PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(15),
+    age INT,
+    ageGroup VARCHAR(20),
+    gender VARCHAR(10),
+    membership VARCHAR(20)
+);
+
+CREATE TABLE Ticket (
+    ticketId INT PRIMARY KEY,
+    seatNo VARCHAR(10),
+    price DECIMAL(6,2)
+);
+
+CREATE TABLE Theater (
+    theaterId INT PRIMARY KEY,
+    name VARCHAR(50),
+    location VARCHAR(100),
+    totalSeats INT
+);
+
+CREATE TABLE Showtime (
+    showId INT PRIMARY KEY,
+    movieId INT,
+    theaterId INT,
+    showDate DATE,
+    showTime TIME,
+    FOREIGN KEY(movieId) REFERENCES Movie(movieId) ON DELETE CASCADE,
+    FOREIGN KEY(theaterId) REFERENCES Theater(theaterId) ON DELETE CASCADE
+);
+
+-- Booking table now also connects to Ticket
+CREATE TABLE Booking (
+    bookingId INT PRIMARY KEY,
+    customerId INT,
+    movieId INT,
+    showId INT,
+    ticketId INT,
+    bookingDate DATE,
+    FOREIGN KEY (customerId) REFERENCES Customer(customerId),
+    FOREIGN KEY (movieId) REFERENCES Movie(movieId),
+    FOREIGN KEY (showId) REFERENCES Showtime(showId),
+    FOREIGN KEY (ticketId) REFERENCES Ticket(ticketId)
+);
+
+CREATE TABLE Payment (
+    paymentId INT PRIMARY KEY,
+    bookingId INT,
+    amount DECIMAL(8,2),
+    paymentDate DATE,
+    method VARCHAR(20),
+    theaterId INT,
+    FOREIGN KEY(bookingId) REFERENCES Booking(bookingId) ON DELETE CASCADE,
+    FOREIGN KEY(theaterId) REFERENCES Theater(theaterId) ON DELETE CASCADE
+);
+
+
+-- ===============================
+-- 2. INSERT DATA
+-- ===============================
+
+-- Movie Table
+INSERT INTO Movie VALUES
+(1, 'Inception', 'Sci-Fi', 148, '2010-07-16', 8.8),
+(2, 'Titanic', 'Romance', 195, '1997-12-19', 9.0),
+(3, 'Interstellar', 'Sci-Fi', 169, '2014-11-07', 8.6),
+(4, 'Avatar', 'Fantasy', 162, '2009-12-18', 8.0),
+(5, 'Joker', 'Drama', 122, '2019-10-04', 8.9),
+(6, 'The Batman', 'Action', 176, '2022-03-04', 8.3),
+(7, 'Frozen', 'Animation', 109, '2013-11-27', 7.5),
+(8, 'Avengers', 'Action', 143, '2012-05-04', 8.2),
+(9, 'Toy Story', 'Animation', 81, '1995-11-22', 8.3),
+(10, 'Black Panther', 'Action', 134, '2018-02-16', 8.0),
+(11, 'Dune', 'Sci-Fi', 155, '2021-10-22', 8.4),
+(12, 'Up', 'Animation', 96, '2009-05-29', 8.3),
+(13, 'Soul', 'Animation', 100, '2020-12-25', 8.1),
+(14, 'Shrek', 'Comedy', 90, '2001-05-18', 7.9),
+(15, 'Oppenheimer', 'Biography', 180, '2023-07-21', 9.1);
+
+-- Customer Table
+INSERT INTO Customer VALUES
+(101, 'Alice', 'alice@gmail.com', '01711111111', 20, '', 'Female', 'Silver'),
+(102, 'Bob', 'bob@yahoo.com', '01822222222', 25, '', 'Male', 'Gold'),
+(103, 'Charlie', 'charlie@gmail.com', '01933333333', 32, '', 'Male', 'Silver'),
+(104, 'Daisy', 'daisy@gmail.com', '01644444444', 27, '', 'Female', 'Bronze'),
+(105, 'Eve', 'eve@gmail.com', '01555555555', 19, '', 'Female', 'Silver'),
+(106, 'Frank', 'frank@gmail.com', '01766666666', 28, '', 'Male', 'Gold'),
+(107, 'Grace', 'grace@outlook.com', '01877777777', 34, '', 'Female', 'Platinum'),
+(108, 'Henry', 'henry@gmail.com', '01988888888', 22, '', 'Male', 'Bronze'),
+(109, 'Ivy', 'ivy@gmail.com', '01699999999', 40, '', 'Female', 'Gold'),
+(110, 'Jack', 'jack@yahoo.com', '01500000000', 18, '', 'Male', 'Silver'),
+(111, 'Kathy', 'kathy@gmail.com', '01712121212', 23, '', 'Female', 'Gold'),
+(112, 'Leo', 'leo@gmail.com', '01813131313', 30, '', 'Male', 'Platinum'),
+(113, 'Mia', 'mia@gmail.com', '01914141414', 26, '', 'Female', 'Silver'),
+(114, 'Nina', 'nina@yahoo.com', '01615151515', 21, '', 'Female', 'Gold'),
+(115, 'Oscar', 'oscar@gmail.com', '01516161616', 35, '', 'Male', 'Bronze');
+
+-- Ticket Table
+INSERT INTO Ticket VALUES
+(1001, 'A1', 300.00),
+(1002, 'A2', 300.00),
+(1003, 'B1', 250.00),
+(1004, 'B2', 250.00),
+(1005, 'C1', 200.00),
+(1006, 'C2', 200.00),
+(1007, 'D1', 180.00),
+(1008, 'D2', 180.00),
+(1009, 'E1', 150.00),
+(1010, 'E2', 150.00),
+(1011, 'F1', 300.00),
+(1012, 'F2', 250.00),
+(1013, 'G1', 200.00),
+(1014, 'G2', 250.00),
+(1015, 'H1', 300.00);
+
+-- Theater Table
+INSERT INTO Theater VALUES
+(201, 'Star Cineplex', 'Dhanmondi', 120),
+(202, 'Blockbuster Cinema', 'Bashundhara', 200),
+(203, 'Shyamoli Hall', 'Shyamoli', 150),
+(204, 'Modhumita', 'Motijheel', 180),
+(205, 'Chayabani', 'Mirpur', 130),
+(206, 'Silver Screen', 'Uttara', 220),
+(207, 'Show Motion', 'Banani', 170),
+(208, 'Moonlight Hall', 'Badda', 190),
+(209, 'Golden Theater', 'Gulshan', 250),
+(210, 'Dream House', 'Dhanmondi', 100),
+(211, 'Cinema World', 'Bashundhara', 300),
+(212, 'City Screen', 'Mirpur', 120),
+(213, 'Hall 13', 'Uttara', 150),
+(214, 'The Grand Hall', 'Gulshan', 280),
+(215, 'Royal View', 'Bashundhara', 260);
+
+-- Showtime Table
+INSERT INTO Showtime VALUES
+(301, 1, 201, '2025-10-22', '18:00:00'),
+(302, 2, 202, '2025-10-23', '20:30:00'),
+(303, 3, 201, '2025-10-25', '17:00:00'),
+(304, 4, 203, '2025-10-24', '16:30:00'),
+(305, 5, 204, '2025-10-26', '19:00:00'),
+(306, 6, 205, '2025-10-22', '15:00:00'),
+(307, 7, 206, '2025-10-23', '18:00:00'),
+(308, 8, 207, '2025-10-24', '21:00:00'),
+(309, 9, 208, '2025-10-25', '14:00:00'),
+(310, 10, 209, '2025-10-26', '17:00:00'),
+(311, 11, 210, '2025-10-27', '20:00:00'),
+(312, 12, 211, '2025-10-28', '19:00:00'),
+(313, 13, 212, '2025-10-29', '16:00:00'),
+(314, 14, 213, '2025-10-30', '18:30:00'),
+(315, 15, 214, '2025-10-31', '20:30:00');
+
+-- Booking Table (Now includes ticketId)
+INSERT INTO Booking VALUES
+(301, 101, 1, 301, 1001, '2025-10-15'),
+(302, 102, 2, 302, 1002, '2025-10-18'),
+(303, 103, 3, 303, 1003, '2025-10-20'),
+(304, 104, 4, 304, 1004, '2025-10-20'),
+(305, 105, 5, 305, 1005, '2025-10-21'),
+(306, 106, 6, 306, 1006, '2025-10-15'),
+(307, 107, 7, 307, 1007, '2025-10-16'),
+(308, 108, 8, 308, 1008, '2025-10-20'),
+(309, 109, 9, 309, 1009, '2025-10-22'),
+(310, 110, 10, 310, 1010, '2025-10-23'),
+(311, 111, 11, 311, 1011, '2025-10-25'),
+(312, 112, 12, 312, 1012, '2025-10-26'),
+(313, 113, 13, 313, 1013, '2025-10-27'),
+(314, 114, 14, 314, 1014, '2025-10-28'),
+(315, 115, 15, 315, 1015, '2025-10-29');
+
+-- Payment Table
+INSERT INTO Payment VALUES
+(601, 301, 300.00, '2025-10-15', 'Card', 201),
+(602, 302, 300.00, '2025-10-18', 'Cash', 202),
+(603, 303, 250.00, '2025-10-20', 'Mobile', 201),
+(604, 304, 250.00, '2025-10-20', 'Card', 203),
+(605, 305, 200.00, '2025-10-21', 'Cash', 204),
+(606, 306, 280.00, '2025-10-15', 'Mobile', 205),
+(607, 307, 250.00, '2025-10-16', 'Card', 206),
+(608, 308, 300.00, '2025-10-20', 'Cash', 207),
+(609, 309, 270.00, '2025-10-22', 'Mobile', 208),
+(610, 310, 200.00, '2025-10-23', 'Card', 209),
+(611, 311, 320.00, '2025-10-25', 'Card', 210),
+(612, 312, 290.00, '2025-10-26', 'Cash', 211),
+(613, 313, 310.00, '2025-10-27', 'Mobile', 212),
+(614, 314, 260.00, '2025-10-28', 'Card', 213),
+(615, 315, 350.00, '2025-10-29', 'Cash', 214);
+
+
+SELECT * FROM Movie;
+SELECT * FROM Customer;
+SELECT * FROM Ticket;
+SELECT * FROM Theater;
+SELECT * FROM Showtime;
+SELECT * FROM Booking;
+SELECT * FROM Payment;
+
+
+-- ===============================
+-- 3. BASIC QUERIES
+-- ===============================
+
+-- 1️⃣ SELECT all movies in 'Action' category AND rating above 8.0
+SELECT * FROM Movie
+WHERE category = 'Action' AND rating > 8.0;
+
+-- 2️⃣ SELECT customers who are 'Gold' members OR age above 30
+SELECT * FROM Customer
+WHERE membership = 'Gold' OR age > 30;
+
+-- 3️⃣ SELECT movies NOT in 'Animation' category
+SELECT * FROM Movie
+WHERE NOT category = 'Animation';
+
+-- 4️⃣ RENAME COLUMN: Rename 'duration' to 'runtime'
+ALTER TABLE Movie RENAME COLUMN duration TO runtime;
+SELECT * FROM Movie;
+
+-- 5️⃣ SELECT showtimes for movieId 1 OR movieId 2
+SELECT * FROM Showtime
+WHERE movieId = 1 OR movieId = 2;
+
+
+
+-- ===============================
+-- 4. AGGREGATE & UPDATE QUERIES
+-- ===============================
+
+-- 1️⃣ Find the average movie rating
+SELECT AVG(rating) AS average_rating
+FROM Movie;
+
+
+-- 3️⃣ Update membership based on age using CASE
+UPDATE Customer
+SET membership = CASE
+    WHEN age < 20 THEN 'Bronze'
+    WHEN age BETWEEN 20 AND 30 THEN 'Silver'
+    WHEN age BETWEEN 31 AND 40 THEN 'Gold'
+    ELSE 'Platinum'
+END;
+SELECT * FROM Customer;
+
+-- 4️⃣ Alter the Ticket table to add new column 'status'
+ALTER TABLE Ticket
+ADD status VARCHAR(20);
+SELECT * FROM Ticket;
+
+-- 5️⃣ Update ticket status based on price
+UPDATE Ticket
+SET status = CASE
+    WHEN price <= 200 THEN 'Economy'
+    WHEN price BETWEEN 201 AND 300 THEN 'Standard'
+    ELSE 'Premium'
+END;
+SELECT * FROM Ticket;
+
+-- 6️⃣ ORDER BY: Show all movies by descending rating
+SELECT title, category, rating
+FROM Movie
+ORDER BY rating DESC;
+
+
+
+-- ===============================
+-- 5. ADVANCED QUERIES
+-- ===============================
+
+-- 1️⃣ CROSS JOIN: All possible customer–movie combinations
+SELECT c.name AS customer_name, m.title AS movie_title
+FROM Customer c
+CROSS JOIN Movie m;
+
+-- 2️⃣ COUNT: Total bookings per customer
+SELECT customerId, COUNT(*) AS total_bookings
+FROM Booking
+GROUP BY customerId;
+
+-- 3️⃣ COUNT: Total bookings per movie
+SELECT movieId, COUNT(*) AS total_bookings
+FROM Booking
+GROUP BY movieId;
+
+-- 4️⃣ GROUP BY with HAVING: Movies with more than 1 booking
+SELECT movieId, COUNT(*) AS total_bookings
+FROM Booking
+GROUP BY movieId
+HAVING COUNT(*) > 0;
+
+-- 5️⃣ COUNT TOTAL BOOKINGS (overall)
+SELECT COUNT(*) AS total_bookings_overall
+FROM Booking;
+
+-- 6️⃣ Subquery: Customers who booked the most expensive ticket
+SELECT * 
+FROM Customer
+WHERE customerId IN (
+    SELECT b.customerId
+    FROM Booking b
+    JOIN Ticket t ON b.ticketId = t.ticketId
+    WHERE t.price = (SELECT MAX(price) FROM Ticket)
+);
+
+-- 7️⃣ Subquery: Movies with rating higher than average
+SELECT * 
+FROM Movie
+WHERE rating > (SELECT AVG(rating) FROM Movie);
+
+-- 8️⃣ Total payment per customer using JOIN and GROUP BY
+SELECT c.name, SUM(p.amount) AS total_payment
+FROM Customer c
+JOIN Booking b ON c.customerId = b.customerId
+JOIN Payment p ON b.bookingId = p.bookingId
+GROUP BY c.customerId;
+
+-- 9️⃣ Total bookings per theater using JOIN and GROUP BY
+SELECT t.name AS theater_name, COUNT(b.bookingId) AS total_bookings
+FROM Theater t
+JOIN Showtime s ON t.theaterId = s.theaterId
+JOIN Booking b ON s.showId = b.showId
+GROUP BY t.theaterId;
